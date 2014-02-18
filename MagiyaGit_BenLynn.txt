@@ -1,0 +1,194 @@
+--MagiyaGit_Ben Lynn
+1.3. сохр-ся все локально также - зеркалируют центральный сервер		
+1.5. merge conflict - второй решает что выбрать, НЕ АВТОМАТИЧЕСКИ
+2.1.
+$ git init
+$ git add .
+$ git commit -m "1st reserve"
+
+$ git commit -a -m "2nd reserve"
+
+$ git reset --hard
+  ... ... ... ....  ...   82f5 - можно скопировать начало назв|хеш из $ git log > ChangeLog
+  ... ... ... ....  ...   "1st " - назв
+  ... ... ... ....  ...   master~5 - 5я с конца
+                              - и удаления всех последующих безвозвратно
+$ git checkout 82f5 - без ..., т.е. перенос во времени ;)  \\ВЫБРАТЬ
+                             но изменяя далее => фантаст. альтернативная реальность => branch !!
+для начинающих лучше $ git commit -a перед checkout, т.к. молча поменяет файлы !!
+ ... ... ... ....  ...  82f5 file1 file2 - и только их
+
+2.5. 
+$ git revert 1b6d - откат, но в виде коммита см. $ git log
+2.6. = 3.5.
+$ git clone git://git.or.cz/gitmagic.git  - все получить с сервер/каталог/файл - создать форк
+
+$ git pull - и далее держать руку на пульсе
+
+2.8. rsync   =
+нужен ssh. или git daemon и $ git clone git://...
+git instaweb
+
+2.9 $ git diff - изм.с последнего коммита, и потом применить патч | git apply.
+               .. "@{yesterday}" - со вч.дня
+               .. 82f5 "master~2" - между версией 82f5 и 2 коммита назад
+или $ git whatchanged --since="2 weeks ago"
+или (http://sourceforge.net/projects/qgit), (http://jonas.nitro.dk/tig)
+
+3.8. парал работа
+$ git clone . /новый/каталог
+$ git pull /др/клон HEAD  \\вытянуть клон
+3.2. 
+--свое голое(Пустое) депо - нет рабочего каталога - только .git-история изменений,без снимков 
+ \\ или по иструк на обществ.сервере 
+$ mkdir proj.gitга
+$ cd proj.git
+$ git init --bare # или в 1 строчку: GIT_DIR=proj.git git init
+
+$ git daemon --detach # если еще не запущен
+--вы
+$ git init
+$ git add .
+$ git commit -m "1st"
+$ git push git://центр.сервер/путь/proj.git HEAD
+
+4. git branch - вместо клонирования - мгнов.изменить с посл.выпуска на эксперимент, на тек, на версию друга ит.д.
+
+$ echo "I'm boss" > myfile.txt
+$ git init
+$ git add .
+$ git commit -m "1st"
+
+$ git checkout -b boss # оконч.изм. кнопки босса, но ветка
+$ echo "Y're my boss" > myfile.txt
+$ git commit -a -m "2nd"
+
+$ git checkout master # я босс
+$ git checkout boss # ты ..  независимые коммиты до бесконечности
+
+4.2.
+$ git commit -a
+$ git checkout HEAD~3 \\черновые изменения, коммит
+
+$ git checkout master \\вазврат, все что не закоммичено, будет перенесено!!
+
+$ git checkout -b dirty \\но если хотите сохр.черновые изм-ния, коммит
+$ git checkout dirty \\ для возврата черновым изм-ниям
+
+4.3.
+$ git commit -a
+$ git checkout -b dirty 1b6d \\или по хешу
+$ git commit -a -m "Исправлено"
+$ git checkout master
+$ git merge dirty // влить исправления!!
+
+4.4. 
+pull - по сути получает коммиты и сливает с Вашей текущей
+ - нет лок.изм - ок
+ - есть - слияние или сообщ о конфликтах
+  приоритете имеет ВАШ предыдущий коммит(родитель)-HEAD, а не чужой коммит(родитель) HEAD^2
+
+--примеры
+$ git log HEAD^2
+$ git diff HEAD^ \\разница с 1м родителем
+$ git checkout 1b6d^^2~10 -b ancient \\ветка "древняя" от 10 комм назад от 2го род 1го род комита с хешем  1b6d
+
+4.5.
+1 часть - выпуск, тест, потом
+2 часть - ждать 1-ую, но можно:
+
+$ git checkout -b part2  \\коммитить 2часть до утверждения 1й части
+
+$ git checkout master # возврат в 1ю
+$ git commit -a # исправлять 1ю и коммитить
+$ git checkout part2 # 
+$ git merge master \\влить во 2ю исправления сделанные в 1й
+--когда 1я утверждена
+$ git checkout master # возврат в 1ю
+$ git merge part2 # вливаем 2ю
+$ git branch -d part2 \\удаляем ветку
+
+--можно все сделать задним числом
+$ git branch -m master part2 # преименование master в part2.
+$ git branch master HEAD~7 # созд.ветку master (будет 1 часть) на 7 комм ранее
+или
+$ git checkout HEAD~7 -b master \\сразу переключаясь на master  для работы в ней
+
+4.6.
+--закрыть Ваши коммиты до оформления:
+$ git branch sanitized # ветка очищенных коммитов
+$ git checkout -b medley # ветка рабочая и перекл в нее, исправлять, коммитить
+--после
+$ git checkout sanitized
+$ git cherry-pick medley^^ \\коммит «пра-родителя» головы ветки «medley» к ветке «sanitized»
+
+4.7.
+$ git branch  \\ список веток
+-d ,  -m \\ удалять, переименовывать
+
+4.8
+--мн-во временных меток, (checkout), (merge) и их удаление
+=> $ git stash \\тайник для тек состояния, восст предыдущего
+$ git stash apply \\ когда захотите вернуть в тайник и возм-но надо разрешить конфликты
+
+4.9
+возможно клоны и переключение cd удобнее ветвления
+клоны = окна браузера, ветки = закладки в нем
+
+5.
+Изменяйте в истории только ВАШУ часть, иначе трудно совместить деревья
+$ git commit --amend \\ изм.описание последнего коммита
+--недовольны описанием последних 10 коммитов
+$ git rebase -i HEAD~10 \\ появится в редакторе $EDITOR
+и можно удалить коммиты, менять порядок
+«pick» на:
+• «edit» изм  коммитов;
+=>$ git commit --amend
+• «reword» изм описние в журнале;
+• «squash»слить комм с предыдущим;
+• «fixup», слить комм с предыдущим, отбросив описание
+$ git rebase --continue
+
+git rebase --onto //упорядочть изм-ния: ваши, потом офиц.
+
+5.4. переписать историю
+
+$ git filter-branch --tree-filter ’rm удалить_файл’ HEAD
+
+6.
+pull , clone - достаточны для 1 польз-ля, чтобы храниить в разных местах
+6.1. кто я?
+Каждый комит выводит имя\мейл  автора см. git log
+$ git config --global user.name "JohnDoe" \\без --global для лок.каталога
+$ git config --global user.email johndoe@example.com
+$ git config remote.origin.url git://сервер.url/proj.git
+
+6.2. Git через SSH, HTTP
+
+$ GIT_DIR=proj.git git init
+$ cd proj.git
+$ git --bare update-server-info
+$ cp hooks/post-update.sample hooks/post-update
+$ chmod a+x hooks/post-update
+
+$ git push
+$ git clone http://ВЕБ-сервер/proj.git
+
+6.3. Git между локал хранилищами
+$ git bundle create файл HEAD  \\отправитель его пересылает
+$ git pull файл \\получатель
+
+$ git bundle create файл HEAD ^1b6d \\1b6d посл общий
+
+6.4. патчи
+$ git diff 1b6d
+$ git apply < мой.patch
+
+$ git format-patch 1b6d
+
+$ git config --list 
+
+7.
+
+8.
+
