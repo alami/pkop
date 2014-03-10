@@ -4,4 +4,6 @@
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-PKOP 
+PKOP </center>
+<?php
+include_once ('pattern.php');
