@@ -1,9 +1,6 @@
 <html>
 <body>
-<center>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-PKOP </center>
+<center>PKOP </center>
 <?php
-include_once ('pattern.php');
+//require_once ('registry.php');
+require_once ('objpool.php');
